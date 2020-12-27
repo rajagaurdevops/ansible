@@ -1,0 +1,8 @@
+---
+- name: Setup nginx
+  become: yes
+  hosts: 100.25.161.92 
+  gather_facts: yes
+  roles:
+    - nginx
+

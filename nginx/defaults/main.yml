@@ -1,0 +1,3 @@
+---
+nginx_key: https://nginx.org/keys/nginx_signing.key
+nginx_repo: "deb http://nginx.org/packages/mainline/ubuntu {{ ansible_distribution_release }} nginx"
