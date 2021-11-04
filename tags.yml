@@ -1,0 +1,18 @@
+- hosts: localhost
+  gather_facts: yes
+  tasks:
+  - name: Gathers facts (instance metadata) about ec2 hosts
+    ec2_instance_facts:
+        region: "us-east-1"
+        filters:
+          "tag:env": "dev"
+    register: ec2_facts  
+  - name: Start the cold machines 
+    ec2_tag:
+      resource: "{{ item.instance_id }}"
+      region: "us-east-1"
+    args:
+      tags:
+        cname: "{{ item.tags.Name }}"
+    with_items: "{{ ec2_facts.instances }}"
+    
