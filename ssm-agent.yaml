@@ -18,7 +18,8 @@
       when: ansible_os_family == 'Debian'
 
     - name: install ssm agent on ubuntu machines
-      shell: sudo dpkg -i /tmp/ssm/amazon-ssm-agent.deb
+      apt:
+        deb: /tmp/ssm/amazon-ssm-agent.deb
       when: ansible_os_family == 'Debian'
     
     - name: download ssm agent on centos machines
