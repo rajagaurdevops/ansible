@@ -9,7 +9,7 @@
 
     - block:
       - name: create swap file
-        command: dd if=/dev/zero of=/swapfile bs=1G count=8
+        command: dd if=/dev/zero of=/swapfile bs=1G count=4
 
       - name: change permission type
         file: 
