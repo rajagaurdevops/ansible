@@ -1,0 +1,37 @@
+---
+- name: installing ssm agent on all machines
+  hosts: localhost
+  gather_facts: yes
+  become: true
+
+  
+  tasks:
+    - name: create directory mkdir /tmp/ssm to download ssm agent
+      file:
+        path: /tmp/ssm 
+        state: directory
+
+    - name: download ssm agent on ubuntu machines
+      get_url:
+        url: https://s3.us-east-1.amazonaws.com/amazon-ssm-us-east-1/latest/debian_amd64/amazon-ssm-agent.deb
+        dest: /tmp/ssm 
+      when: ansible_os_family == 'Debian'
+
+    - name: install ssm agent on ubuntu machines
+      shell: sudo dpkg -i /tmp/ssm/amazon-ssm-agent.deb
+      when: ansible_os_family == 'Debian'
+    
+    - name: download ssm agent on centos machines
+      yum:
+        name: https://s3.us-east-1.amazonaws.com/amazon-ssm-us-east-1/latest/linux_amd64/amazon-ssm-agent.rpm
+        state: present
+      when: ansible_os_family == 'RedHat' 
+
+    - name: start ssm agent service  
+      service: 
+        name: amazon-ssm-agent
+        state: started
+        enabled: yes
+
+
+    

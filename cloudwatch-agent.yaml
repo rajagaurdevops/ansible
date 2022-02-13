@@ -1,0 +1,93 @@
+- hosts: localhost
+  become: True
+  gather_facts: true
+  tasks:
+    - name: Checking if CloudwatchAgent is installed already
+      command: amazon-cloudwatch-agent-ctl -a status
+      register: status
+      ignore_errors: yes
+    
+    - debug: var=status.stdout_lines
+
+    - block:
+     
+      - name: Getting stats of a directory
+        ansible.builtin.stat:
+          path: /opt/aws
+        register: st
+
+      - name: Creating directory for downloading CloudwatchAgent
+        file: 
+          path: /opt/aws
+          state: directory
+        when: not st.stat.exists
+
+      - name: Getting stats of CloudWatchAgent package
+        ansible.builtin.stat:
+          path: "/opt/aws/amazon-cloudwatch-agent.deb"
+        register: dwn_st
+
+      - name: Downloading CloudWatchAgent package
+        get_url:
+          url: https://s3.amazonaws.com/amazoncloudwatch-agent/ubuntu/amd64/latest/amazon-cloudwatch-agent.deb
+          dest: "/opt/aws/amazon-cloudwatch-agent.deb"
+        when: not dwn_st.stat.exists
+        
+      - name: Installing the package via apt
+        apt:
+          deb: "/opt/aws//amazon-cloudwatch-agent.deb"
+
+
+      - name: Getting the stats of configuration file
+        ansible.builtin.stat:
+          path: /opt/aws/amazon-cloudwatch-agent/bin/config.json
+        register: config_file
+
+      - name: Creating cloudwatch configuration file
+        copy:
+          dest: /opt/aws/amazon-cloudwatch-agent/bin/config.json
+          content: |
+            {
+                "agent": {
+                      "logfile": "/opt/aws/amazon-cloudwatch-agent/logs/amazon-cloudwatch-agent.log"
+                  },
+                "metrics":{
+                    "append_dimensions":{
+                "InstanceId":"${aws:InstanceId}"	
+                    },
+                    "metrics_collected":{
+                      "mem":{
+                          "measurement":[
+                            "mem_used_percent"
+                          ],
+                          "metrics_collection_interval":60
+                      },
+                      "swap": {
+                          "measurement": [
+                              "swap_used_percent"
+                          ],
+                          "metrics_collection_interval": 60
+                        },
+                        "disk": {
+                          "measurement": [
+                            "used_percent"
+                          ],
+                          "resources": [
+                              "/"
+                          ],
+                    "metrics_collection_interval":60
+                      }  
+                    }
+                }
+              }
+
+        #when: not config_file.stat.exists
+
+      - name: Starting the CW agent
+        command: sudo /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a fetch-config -m ec2 -s -c file:/opt/aws/amazon-cloudwatch-agent/bin/config.json
+    
+      - name: Status of CW agent
+        command: amazon-cloudwatch-agent-ctl -a status
+        register: out
+      
+      - debug: var=out.stdout_lines
