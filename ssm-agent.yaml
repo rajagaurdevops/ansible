@@ -16,7 +16,7 @@
     - name: start ssm agent on ubuntu machines
       systemd:
         name: snap.amazon-ssm-agent.amazon-ssm-agent.service
-        state: present
+        state: started
       when: ansible_os_family == 'Debian'      
     
     - name: download ssm agent on centos machines
