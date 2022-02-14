@@ -12,6 +12,12 @@
         state: present
         classic: yes
       when: ansible_os_family == 'Debian'
+
+    - name: start ssm agent on ubuntu machines
+      systemd:
+        name: snap.amazon-ssm-agent.amazon-ssm-agent.service
+        state: present
+      when: ansible_os_family == 'Debian'      
     
     - name: download ssm agent on centos machines
       yum:
@@ -24,6 +30,7 @@
         name: amazon-ssm-agent
         state: started
         enabled: yes
+      when: ansible_os_family == 'RedHat'
 
 
     
