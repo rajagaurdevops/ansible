@@ -1,0 +1,7 @@
+- name: install monitoring stack
+  hosts: localhost
+  become: yes
+  roles:
+    - prometheus
+    - grafana
+  
