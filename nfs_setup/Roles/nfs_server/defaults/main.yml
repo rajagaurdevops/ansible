@@ -1,0 +1,2 @@
+nfs_shared_dir: /srv/shared
+nfs_network: 192.168.27.0/24
