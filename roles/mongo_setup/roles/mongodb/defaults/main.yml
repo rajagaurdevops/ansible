@@ -1,0 +1,4 @@
+# roles/mongodb/defaults/main.yml
+mongodb_version: "6.0"
+mongodb_package: "mongodb-org"
+

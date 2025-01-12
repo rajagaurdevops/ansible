@@ -1,0 +1,31 @@
+# roles/mongodb/tasks/main.yml
+---
+- name: Install MongoDB public key
+  apt_key:
+    url: https://www.mongodb.org/static/pgp/server-5.0.asc
+    state: present
+
+- name: Add MongoDB repository
+  apt_repository:
+     repo: "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/{{ mongodb_version }} multiverse"
+     state: present
+- name: Install MongoDB packages
+  apt:
+    name: "{{ mongodb_package }}"
+    state: present
+    update_cache: yes
+
+- name: Start MongoDB service
+  service:
+    name: mongod
+    state: started
+    enabled: yes
+
+- name: Open MongoDB port in firewall (if UFW is enabled)
+  ufw:
+    rule: allow
+    name: 'MongoDB'
+    port: '27017'
+    state: enabled
+    proto: tcp
+

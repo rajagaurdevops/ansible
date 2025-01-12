@@ -1,0 +1,4 @@
+[mongodb_servers]
+54.197.106.98 ansible_user=ubuntu 
+
+

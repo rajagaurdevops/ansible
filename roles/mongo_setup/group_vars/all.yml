@@ -1,0 +1,4 @@
+# group_vars/all.yml
+mongodb_version: "5.0"
+mongodb_package: "mongodb-org"
+
