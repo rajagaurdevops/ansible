@@ -1,9 +1,0 @@
----
-- name: installing ssm agent on all machines
-  hosts: localhost
-  gather_facts: yes
-
-  
-  tasks:
-    - name: download ssm agent on ubuntu machines
-      shell: ls

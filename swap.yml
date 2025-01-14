@@ -1,0 +1,38 @@
+---
+- name: Configure Swap Memory
+  hosts: all
+  become: true
+  tasks:
+    - name: Check if swapfile already exists
+      ansible.builtin.stat:
+        path: /swapfile
+      register: swapfile_status
+
+    - name: Create a swapfile
+      ansible.builtin.command:
+        cmd: dd if=/dev/zero of=/swapfile bs=1M count=1024
+      when: not swapfile_status.stat.exists
+
+    - name: Set permissions on the swapfile
+      ansible.builtin.file:
+        path: /swapfile
+        mode: '0600'
+        owner: root
+        group: root
+      when: not swapfile_status.stat.exists
+
+    - name: Set up the swap area
+      ansible.builtin.command:
+        cmd: mkswap /swapfile
+      when: not swapfile_status.stat.exists
+
+    - name: Enable the swapfile
+      ansible.builtin.command:
+        cmd: swapon /swapfile
+      when: not swapfile_status.stat.exists
+
+    - name: Make swap permanent
+      ansible.builtin.lineinfile:
+        path: /etc/fstab
+        line: "/swapfile none swap sw 0 0"
+        state: present
