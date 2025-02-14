@@ -1,0 +1,36 @@
+---
+- name: Disable Swap Memory
+  hosts: all
+  become: true
+  tasks:
+    # Check if the swap file exists on the system
+    - name: Check if swapfile exists
+      ansible.builtin.stat:
+        path: /swapfile
+      register: swapfile_status
+
+    # Disable swap in the current session if a swapfile exists
+    - name: Disable swap in current session
+      ansible.builtin.command:
+        cmd: swapoff -a
+      when: swapfile_status.stat.exists  # Only disable if swapfile exists
+
+    # Remove any swap entry from the /etc/fstab file to prevent it from re-enabling after a reboot
+    - name: Remove swap entry from /etc/fstab
+      ansible.builtin.replace:
+        path: /etc/fstab
+        regexp: '^.*swap.*$'  # Regular expression to match any line containing swap
+        replace: ''  # Remove the line
+      when: swapfile_status.stat.exists  # Only remove if swapfile exists
+
+    # Delete the swap file (optional), which is no longer needed
+    - name: Delete the swap file (optional)
+      ansible.builtin.file:
+        path: /swapfile
+        state: absent  # Ensures the swapfile is deleted
+      when: swapfile_status.stat.exists  # Only delete if swapfile exists
+
+    # Ensure swap is disabled permanently by checking the swap status
+    - name: Ensure swap is disabled permanently
+      ansible.builtin.command:
+        cmd: swapon --summary  # Shows summary of swap devices, should return nothing 

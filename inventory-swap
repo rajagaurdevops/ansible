@@ -1,2 +1,2 @@
 [testing]
-192.168.100.127 ansible_user=vagrant
+34.207.248.149 ansible_user=ubuntu

@@ -1,5 +1,5 @@
 [nfs_server]
-192.168.27.126 ansible_user=vagrant ansible_become=yes
+54.81.155.32 ansible_user=ubuntu ansible_become=yes
 
 [nfs_client]
-192.168.27.117 ansible_user=vagrant ansible_become=yes
+192.168.205.136 ansible_user=vagrant ansible_become=yes
