@@ -3,10 +3,11 @@
   become: yes
   hosts: nfs_server
   roles:
-    - nfs-server
+    - nfs-setup/nfs-server
+
 
 - name: Configure NFS Client
   hosts: nfs_client
   roles:
-    - nfs-client
+    - nfs-setup/nfs-client
 
