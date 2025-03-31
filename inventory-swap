@@ -1,2 +1,2 @@
 [testing]
-34.207.248.149 ansible_user=ubuntu
+localhost ansible_user=ubuntu
