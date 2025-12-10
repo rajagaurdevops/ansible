@@ -91,3 +91,36 @@ sudo apt install software-properties-common
 sudo add-apt-repository --yes --update ppa:ansible/ansible
 sudo apt install ansible
 ansible --version
+```
+### 8. Configuration File
+The Ansible configuration file is:
+```
+/etc/ansible/ansible.cfg
+```
+### 9. Inventory
+Inventory defines the hosts managed by Ansible<br>
+Default inventory file:
+```
+/etc/ansible/hosts
+```
+### 10. Playbooks
+Playbooks are YAML files that define automation steps<br>
+They describe the desired state of systems<br>
+Run a playbook:
+```
+ansible-playbook -i hosts file.yml
+```
+
+### 11. Modules and Tasks
+Modules perform actual tasks such as:<br>
+Installing packages<br>
+Managing services<br>
+Copying files<br>
+Tasks call modules within playbooks 
+
+### 12. Variables and Facts
+Variables make playbooks dynamic<br>
+Facts are system information collected automatically from hosts (OS, IP, memory, etc.)
+
+### 13. Roles
+Roles organize playbooks into reusable components and are recommended for production environments.
