@@ -124,3 +124,5 @@ Facts are system information collected automatically from hosts (OS, IP, memory,
 
 ### 13. Roles
 Roles organize playbooks into reusable components and are recommended for production environments.
+
+Official Getting Started Guide: Ansible Documentation – Getting Started
